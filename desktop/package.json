@@ -1,0 +1,101 @@
+{
+  "name": "lfm3-live-translate-desktop",
+  "productName": "Parley",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local speech translation that runs entirely on your machine",
+  "main": "main.mjs",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --mac --dir",
+    "dist:win": "node build-win.mjs",
+    "dist:win:dir": "node build-win.mjs --dir"
+  },
+  "devDependencies": {
+    "electron": "^40.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "com.lionel.parley",
+    "productName": "Parley",
+    "directories": {
+      "output": "dist",
+      "buildResources": "."
+    },
+    "files": [
+      "main.mjs",
+      "splash.html",
+      "preload-splash.cjs",
+      "llama.mjs",
+      "models.mjs",
+      "package.json",
+      "clock.mjs"
+    ],
+    "extraResources": [
+      {
+        "from": "../server.mjs",
+        "to": "app/server.mjs"
+      },
+      {
+        "from": "../clock.mjs",
+        "to": "app/clock.mjs"
+      },
+      {
+        "from": "../guards.rules.json",
+        "to": "app/guards.rules.json"
+      },
+      {
+        "from": "../public",
+        "to": "app/public"
+      }
+    ],
+    "mac": {
+      "target": [
+        "dir"
+      ],
+      "category": "public.app-category.productivity",
+      "icon": "Parley.icns",
+      "extraResources": [
+        {
+          "from": "vendor/llama",
+          "to": "llama"
+        }
+      ],
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "Parley listens to the microphone so it can transcribe and translate speech on this Mac. Audio never leaves the device."
+      }
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "Parley.ico",
+      "extraResources": [
+        {
+          "from": "vendor/llama-win",
+          "to": "llama"
+        },
+        {
+          "from": "vendor/ffmpeg-win",
+          "to": "ffmpeg"
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Parley",
+      "artifactName": "Parley-Setup-${version}-${arch}.${ext}"
+    },
+    "copyright": "Copyright © 2026 Lionel Ferrand"
+  },
+  "author": "Lionel Ferrand"
+}

@@ -1,0 +1,200 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  :root {
+    --ko: #ff6b8a;
+    --accent: #5b8cff;
+    --accent2: #8b6cff;
+    --ok: #3ddc97;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 34px;
+    background: #0d1016;
+    color: #e8ecf5;
+    font: 13px/1.5 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    width: 1180px;
+  }
+  h1 { font-size: 15px; margin: 0 0 3px; letter-spacing: -.01em; }
+  .lede { color: #7b8499; font-size: 12px; margin: 0 0 26px; }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px 22px; }
+
+  .card { }
+  .tile {
+    width: 150px; height: 150px;
+    border-radius: 34px;      /* ~22.5% — macOS squircle approximation */
+    position: relative;
+    overflow: hidden;
+    display: grid; place-items: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.16);
+  }
+  .name { margin-top: 11px; font-size: 12.5px; font-weight: 600; letter-spacing: -.01em; }
+  .desc { font-size: 11px; color: #78819a; line-height: 1.45; margin-top: 2px; }
+
+  /* ---------- A: refined 한 ---------- */
+  .a {
+    background:
+      radial-gradient(120% 100% at 20% 0%, #ff8fa4 0%, transparent 55%),
+      linear-gradient(150deg, #ff6b8a 0%, #a45bff 55%, #5b8cff 100%);
+    font: 700 74px/1 "Apple SD Gothic Neo", "AppleGothic", sans-serif;
+    color: #fff;
+    text-shadow: 0 2px 10px rgba(90,0,40,.35);
+  }
+
+  /* ---------- B: wave bubble ---------- */
+  .b { background: linear-gradient(150deg, #ff6b8a, #5b8cff); }
+  .b svg { width: 96px; height: 96px; }
+
+  /* ---------- C: two voices ---------- */
+  .c { background: linear-gradient(160deg, #1d2433, #0f1420); }
+  .c svg { width: 104px; height: 104px; }
+
+  /* ---------- D: sound -> letter ---------- */
+  .d { background: linear-gradient(155deg, #5b8cff, #8b6cff); }
+  .d svg { width: 104px; height: 104px; }
+
+  /* ---------- E: ribbon ---------- */
+  .e { background: linear-gradient(150deg, #ff6b8a 0%, #8b6cff 100%); }
+  .e svg { width: 108px; height: 108px; }
+
+  /* ---------- F: mic aperture ---------- */
+  .f { background: linear-gradient(155deg, #ff6b8a, #ff8f4d); }
+  .f svg { width: 92px; height: 92px; }
+
+  /* ---- size test strip ---- */
+  .strip {
+    margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid #202636;
+  }
+  .strip h2 { font-size: 12px; color: #78819a; font-weight: 500; margin: 0 0 16px; }
+  .sizes { display: flex; align-items: flex-end; gap: 26px; }
+  .sizes div { text-align: center; }
+  .sizes .lbl { font-size: 10px; color: #5c6478; margin-top: 7px; }
+  .mini { border-radius: 22.5%; overflow: hidden; display: grid; place-items: center; }
+  .m128 { width: 128px; height: 128px; }
+  .m64  { width: 64px;  height: 64px;  border-radius: 23%; }
+  .m32  { width: 32px;  height: 32px;  border-radius: 24%; }
+  .m16  { width: 16px;  height: 16px;  border-radius: 26%; }
+</style>
+</head>
+<body>
+  <h1>Icon directions — Live Translate</h1>
+  <p class="lede">Six concepts at app-icon scale, then a legibility strip down to 16 px.</p>
+
+  <div class="grid">
+
+    <!-- A -->
+    <div class="card">
+      <div class="tile a">한</div>
+      <div class="name">A · Refined <em>한</em></div>
+      <div class="desc">Evolves the mark already in the app. Warm→cool gradient reads as speech in, speech out. Strongest at large sizes; at 16 px the glyph turns to mud.</div>
+    </div>
+
+    <!-- B -->
+    <div class="card">
+      <div class="tile b">
+        <svg viewBox="0 0 100 100" fill="none">
+          <path d="M22 20h56a10 10 0 0 1 10 10v34a10 10 0 0 1-10 10H44L26 88V74h-4a10 10 0 0 1-10-10V30a10 10 0 0 1 10-10Z"
+                fill="rgba(255,255,255,.93)"/>
+          <g fill="#8b5cf6">
+            <rect x="27" y="40" width="6" height="14" rx="3"/>
+            <rect x="38" y="33" width="6" height="28" rx="3"/>
+            <rect x="49" y="37" width="6" height="20" rx="3"/>
+            <rect x="60" y="30" width="6" height="34" rx="3"/>
+            <rect x="71" y="41" width="6" height="12" rx="3"/>
+          </g>
+        </svg>
+      </div>
+      <div class="name">B · Wave bubble</div>
+      <div class="desc">Says "spoken language, translated" immediately. The most legible at small sizes — the bubble silhouette survives, the bars blur into texture.</div>
+    </div>
+
+    <!-- C -->
+    <div class="card">
+      <div class="tile c">
+        <svg viewBox="0 0 100 100" fill="none">
+          <path d="M20 30h32a10 10 0 0 1 10 10v18a10 10 0 0 1-10 10H36l-16 12V30Z"
+                fill="none" stroke="#ff6b8a" stroke-width="5" stroke-linejoin="round"/>
+          <path d="M50 62h30a6 6 0 0 0 6-6V40a6 6 0 0 0-6-6H66"
+                fill="none" stroke="#5b8cff" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="72" cy="27" r="4.5" fill="#3ddc97"/>
+        </svg>
+      </div>
+      <div class="name">C · Two voices</div>
+      <div class="desc">A conversation between two parties, the second still forming. Dark tile sits calmly in a Dock full of bright icons.</div>
+    </div>
+
+    <!-- D -->
+    <div class="card">
+      <div class="tile d">
+        <svg viewBox="0 0 100 100" fill="none">
+          <g fill="rgba(255,255,255,.95)">
+            <rect x="14" y="44" width="5" height="12" rx="2.5"/>
+            <rect x="24" y="36" width="5" height="28" rx="2.5"/>
+            <rect x="34" y="42" width="5" height="16" rx="2.5"/>
+          </g>
+          <path d="M48 30v40M48 30h14M48 70h14" stroke="#fff" stroke-width="5.5" stroke-linecap="round"/>
+          <path d="M70 42v16" stroke="rgba(255,255,255,.75)" stroke-width="5.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="name">D · Sound into letter</div>
+      <div class="desc">Waveform on the left resolving into Hangul strokes on the right. The concept is the product. Busiest of the six; needs the most paring back.</div>
+    </div>
+
+    <!-- E -->
+    <div class="card">
+      <div class="tile e">
+        <svg viewBox="0 0 100 100" fill="none">
+          <path d="M18 68c14 0 14-36 28-36s14 36 28 36"
+                stroke="rgba(255,255,255,.95)" stroke-width="7" stroke-linecap="round"/>
+          <path d="M18 44c14 0 14 24 28 24s14-24 28-24"
+                stroke="rgba(255,255,255,.42)" stroke-width="7" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="name">E · Ribbon</div>
+      <div class="desc">Two threads passing each other — one language becoming another. No letters, no bubbles. Scales perfectly to 16 px, but the meaning is more felt than read.</div>
+    </div>
+
+    <!-- F -->
+    <div class="card">
+      <div class="tile f">
+        <svg viewBox="0 0 100 100" fill="none">
+          <rect x="38" y="18" width="24" height="40" rx="12" fill="rgba(255,255,255,.95)"/>
+          <path d="M26 46a24 24 0 0 0 48 0" stroke="rgba(255,255,255,.95)" stroke-width="6.5" stroke-linecap="round"/>
+          <path d="M50 70v12" stroke="rgba(255,255,255,.95)" stroke-width="6.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="name">F · Mic</div>
+      <div class="desc">Unmistakably "talk into this". Risk: it reads as a voice recorder, not a translator — nothing here says a second language exists.</div>
+    </div>
+
+  </div>
+
+  <div class="strip">
+    <h2>Legibility — same mark at Dock and menu-bar sizes</h2>
+    <div class="sizes">
+      <div><div class="mini m128 a" style="font-size:64px">한</div><div class="lbl">128</div></div>
+      <div><div class="mini m64 a" style="font-size:30px">한</div><div class="lbl">64</div></div>
+      <div><div class="mini m32 a" style="font-size:15px">한</div><div class="lbl">32</div></div>
+      <div><div class="mini m16 a" style="font-size:8px">한</div><div class="lbl">16</div></div>
+
+      <div style="width:24px"></div>
+
+      <div><div class="mini m128 b"><svg viewBox="0 0 100 100" width="86"><path d="M22 20h56a10 10 0 0 1 10 10v34a10 10 0 0 1-10 10H44L26 88V74h-4a10 10 0 0 1-10-10V30a10 10 0 0 1 10-10Z" fill="rgba(255,255,255,.93)"/><g fill="#8b5cf6"><rect x="27" y="40" width="6" height="14" rx="3"/><rect x="38" y="33" width="6" height="28" rx="3"/><rect x="49" y="37" width="6" height="20" rx="3"/><rect x="60" y="30" width="6" height="34" rx="3"/><rect x="71" y="41" width="6" height="12" rx="3"/></g></svg></div><div class="lbl">128</div></div>
+      <div><div class="mini m64 b"><svg viewBox="0 0 100 100" width="43"><path d="M22 20h56a10 10 0 0 1 10 10v34a10 10 0 0 1-10 10H44L26 88V74h-4a10 10 0 0 1-10-10V30a10 10 0 0 1 10-10Z" fill="rgba(255,255,255,.93)"/><g fill="#8b5cf6"><rect x="27" y="40" width="6" height="14" rx="3"/><rect x="38" y="33" width="6" height="28" rx="3"/><rect x="49" y="37" width="6" height="20" rx="3"/><rect x="60" y="30" width="6" height="34" rx="3"/><rect x="71" y="41" width="6" height="12" rx="3"/></g></svg></div><div class="lbl">64</div></div>
+      <div><div class="mini m32 b"><svg viewBox="0 0 100 100" width="22"><path d="M22 20h56a10 10 0 0 1 10 10v34a10 10 0 0 1-10 10H44L26 88V74h-4a10 10 0 0 1-10-10V30a10 10 0 0 1 10-10Z" fill="rgba(255,255,255,.93)"/><g fill="#8b5cf6"><rect x="27" y="40" width="6" height="14" rx="3"/><rect x="38" y="33" width="6" height="28" rx="3"/><rect x="49" y="37" width="6" height="20" rx="3"/><rect x="60" y="30" width="6" height="34" rx="3"/><rect x="71" y="41" width="6" height="12" rx="3"/></g></svg></div><div class="lbl">32</div></div>
+      <div><div class="mini m16 b"><svg viewBox="0 0 100 100" width="11"><path d="M22 20h56a10 10 0 0 1 10 10v34a10 10 0 0 1-10 10H44L26 88V74h-4a10 10 0 0 1-10-10V30a10 10 0 0 1 10-10Z" fill="rgba(255,255,255,.93)"/><g fill="#8b5cf6"><rect x="27" y="40" width="6" height="14" rx="3"/><rect x="38" y="33" width="6" height="28" rx="3"/><rect x="49" y="37" width="6" height="20" rx="3"/><rect x="60" y="30" width="6" height="34" rx="3"/><rect x="71" y="41" width="6" height="12" rx="3"/></g></svg></div><div class="lbl">16</div></div>
+
+      <div style="width:24px"></div>
+
+      <div><div class="mini m128 e"><svg viewBox="0 0 100 100" width="88"><path d="M18 68c14 0 14-36 28-36s14 36 28 36" stroke="rgba(255,255,255,.95)" stroke-width="7" stroke-linecap="round" fill="none"/><path d="M18 44c14 0 14 24 28 24s14-24 28-24" stroke="rgba(255,255,255,.42)" stroke-width="7" stroke-linecap="round" fill="none"/></svg></div><div class="lbl">128</div></div>
+      <div><div class="mini m64 e"><svg viewBox="0 0 100 100" width="44"><path d="M18 68c14 0 14-36 28-36s14 36 28 36" stroke="rgba(255,255,255,.95)" stroke-width="7" stroke-linecap="round" fill="none"/><path d="M18 44c14 0 14 24 28 24s14-24 28-24" stroke="rgba(255,255,255,.42)" stroke-width="7" stroke-linecap="round" fill="none"/></svg></div><div class="lbl">64</div></div>
+      <div><div class="mini m32 e"><svg viewBox="0 0 100 100" width="22"><path d="M18 68c14 0 14-36 28-36s14 36 28 36" stroke="rgba(255,255,255,.95)" stroke-width="7" stroke-linecap="round" fill="none"/><path d="M18 44c14 0 14 24 28 24s14-24 28-24" stroke="rgba(255,255,255,.42)" stroke-width="7" stroke-linecap="round" fill="none"/></svg></div><div class="lbl">32</div></div>
+      <div><div class="mini m16 e"><svg viewBox="0 0 100 100" width="11"><path d="M18 68c14 0 14-36 28-36s14 36 28 36" stroke="rgba(255,255,255,.95)" stroke-width="7" stroke-linecap="round" fill="none"/><path d="M18 44c14 0 14 24 28 24s14-24 28-24" stroke="rgba(255,255,255,.42)" stroke-width="7" stroke-linecap="round" fill="none"/></svg></div><div class="lbl">16</div></div>
+    </div>
+  </div>
+</body>
+</html>

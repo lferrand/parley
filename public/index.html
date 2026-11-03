@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Parley</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ff6b8a'/%3E%3Ctext x='16' y='23' font-size='18' font-family='sans-serif' font-weight='bold' fill='white' text-anchor='middle'%3E%ED%95%9C%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <!-- Same mark as the app icon: two threads passing each other, one
+             language becoming another. Inline SVG rather than an <img> so it
+             stays crisp at any zoom and needs no extra request. -->
+        <svg viewBox="0 0 100 100" width="28" height="28" fill="none"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 32 C 28 32, 30 68, 50 68 C 70 68, 72 32, 88 32"
+                stroke="#fff" stroke-opacity="0.42" stroke-width="9.5"/>
+          <path d="M12 68 C 28 68, 30 32, 50 32 C 70 32, 72 68, 88 68"
+                stroke="#1a0a2e" stroke-opacity="0.26" stroke-width="15"/>
+          <path d="M12 68 C 28 68, 30 32, 50 32 C 70 32, 72 68, 88 68"
+                stroke="#fff" stroke-opacity="0.97" stroke-width="9.5"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Parley</h1>
+        <p class="sub" id="brandSub">Speak anything. Hear anything.</p>
+      </div>
+    </div>
+    <div class="status" id="status" title="Model status">
+      <span class="dot" id="dot"></span><span id="statusText">checking…</span>
+    </div>
+  </header>
+
+  <section class="pairing">
+    <label class="lang">
+      <span class="tag">Speaking</span>
+      <select id="partner" aria-label="Language being spoken"></select>
+    </label>
+    <div class="arrows" aria-hidden="true">→</div>
+    <label class="lang">
+      <span class="tag">Translates to</span>
+      <select id="targetLang" aria-label="Language to translate into"></select>
+    </label>
+    <div class="pairing-hint" id="pairingHint">Anything spoken or typed is translated into the chosen language. Text already in that language is shown as-is.</div>
+  </section>
+
+  <main class="stage">
+    <div class="transcript" id="transcript" aria-live="polite">
+      <div class="empty" id="empty">
+        <div class="empty-icon">🎙️</div>
+        <p><strong>Tap the microphone and start talking.</strong></p>
+        <p class="muted" id="privacyNote">Everything runs on this Mac — no cloud, nothing uploaded.</p>
+      </div>
+    </div>
+
+    <div class="typebar">
+      <input id="typed" type="text" placeholder="Or type a line and press Enter (no microphone needed)" autocomplete="off" />
+      <button id="sendTyped">Translate</button>
+    </div>
+
+    <div class="controls">
+      <button class="mic" id="mic" aria-label="Start listening">
+        <span class="mic-ring"></span>
+        <svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true">
+          <path fill="currentColor" d="M12 15a3.5 3.5 0 0 0 3.5-3.5V6a3.5 3.5 0 1 0-7 0v5.5A3.5 3.5 0 0 0 12 15Zm6-3.5a1 1 0 1 0-2 0 4 4 0 0 1-8 0 1 1 0 1 0-2 0 6 6 0 0 0 5 5.91V20H8a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2h-3v-2.59A6 6 0 0 0 18 11.5Z"/>
+        </svg>
+      </button>
+      <div class="mic-label" id="micLabel">Tap to speak</div>
+      <div class="level"><i id="level"></i></div>
+      <!-- Interim transcript: words appear while you are still talking, so a
+           long utterance does not land as one block after the pause. -->
+      <div class="live-caption" id="liveCaption" hidden></div>
+      <!-- Provisional translation of the sentences finished so far. Replaced by
+           the real translation when the utterance ends. -->
+      <div class="live-translation" id="liveTranslation" hidden></div>
+    </div>
+  </main>
+
+  <footer class="settings">
+    <label class="chip select">
+      <span>Input</span>
+      <select id="audioSource" title="Which sound to translate">
+        <option value="mic" selected>Microphone</option>
+        <option value="system">System audio</option>
+      </select>
+    </label>
+    <label class="chip"><input type="checkbox" id="autoListen" checked /><span>Auto-listen</span></label>
+    <label class="chip"><input type="checkbox" id="autoSpeak" checked /><span>Speak translation</span></label>
+    <label class="chip"><input type="checkbox" id="showSource" checked /><span>Show source text</span></label>
+    <label class="chip select">
+      <span>Voice</span>
+      <select id="gender">
+        <option value="female" selected>Female</option>
+        <option value="male">Male</option>
+      </select>
+    </label>
+    <label class="chip select">
+      <span>Engine</span>
+      <select id="provider" title="Which backend runs the models">
+        <option value="ollama" selected>This Mac</option>
+        <option value="modal">Cloud (Modal)</option>
+      </select>
+    </label>
+    <label class="chip select">
+      <span>Pause</span>
+      <select id="pauseTolerance" title="How long a silence ends your turn">
+        <option value="1200">Short</option>
+        <option value="2000" selected>Normal</option>
+        <option value="3000">Long</option>
+        <option value="4500">Very long</option>
+      </select>
+    </label>
+    <button class="ghost" id="copyAll">Copy transcript</button>
+    <button class="ghost" id="clear">Clear</button>
+    <button class="ghost" id="modelsBtn" title="Inspect and repair the downloaded models">Models</button>
+    <!-- Only shown when the server publishes a build (the deployed web version).
+         The desktop app has no reason to offer itself as a download. Each
+         platform is its own link and appears only if that build is published,
+         so this never offers a download that 404s. -->
+    <a class="ghost download" id="downloadApp" data-kind="mac" hidden
+       title="Download the offline macOS app">
+      <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M12 3a1 1 0 0 1 1 1v9.59l3.3-3.3a1 1 0 1 1 1.4 1.42l-5 5a1 1 0 0 1-1.4 0l-5-5a1 1 0 1 1 1.4-1.42l3.3 3.3V4a1 1 0 0 1 1-1ZM5 19a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1Z"/></svg>
+      <span id="downloadLabel">Mac app</span>
+    </a>
+    <a class="ghost download" id="downloadWin" data-kind="win" hidden
+       title="Download the offline Windows app">
+      <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M3 5.5 10.2 4.4v7.1H3V5.5Zm0 13 7.2 1.1v-7H3v5.9Zm8.4 1.3L21 21V12.6h-9.6v7.2ZM11.4 4.2 21 3v8.6h-9.6V4.2Z"/></svg>
+      <span id="downloadWinLabel">Windows app</span>
+    </a>
+    <span class="engine" id="engine"></span>
+  </footer>
+</div>
+
+<!-- Model inspector. Hidden until asked for: a translator should not open on a
+     disk-usage screen, but when a download fails there has to be somewhere to
+     look that is not a terminal. -->
+<div class="modal" id="modelsModal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modelsTitle">
+    <header class="modal-head">
+      <div>
+        <h2 id="modelsTitle">Models</h2>
+        <p class="modal-sub" id="modelsSub">Checking what is on disk…</p>
+      </div>
+      <button class="modal-x" id="modelsClose" aria-label="Close">×</button>
+    </header>
+
+    <div class="modal-body">
+      <div class="mbar" id="modelsBar" hidden><i id="modelsBarFill"></i></div>
+      <ul class="mlist" id="modelsList"></ul>
+      <p class="mnote" id="modelsNote"></p>
+    </div>
+
+    <footer class="modal-foot">
+      <button class="ghost" id="modelsReveal">Reveal folder</button>
+      <span class="spacer"></span>
+      <button class="primary" id="modelsDownload" hidden>Download</button>
+      <button class="ghost" id="modelsDone">Done</button>
+    </footer>
+  </div>
+</div>
+<script src="/app.js"></script>
+</body>
+</html>

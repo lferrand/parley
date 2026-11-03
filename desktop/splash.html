@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Parley</title>
+<style>
+  :root {
+    --bg: #14161a;
+    --fg: #e8eaf0;
+    --muted: #8b91a0;
+    --accent: #ff6b8a;
+    --ok: #4ade80;
+    --bad: #f87171;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--fg);
+    font: 13px/1.5 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-app-region: drag;
+    overflow: hidden;
+  }
+  .wrap {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 34px 34px 26px;
+  }
+  .head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 0 rgba(255,107,138,.55);
+    animation: pulse 1.9s ease-out infinite;
+    flex: none;
+  }
+  .dot.done { background: var(--ok); animation: none; }
+  .dot.err  { background: var(--bad); animation: none; }
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(255,107,138,.55); }
+    70%  { box-shadow: 0 0 0 11px rgba(255,107,138,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,107,138,0); }
+  }
+  h1 {
+    font-size: 15px;
+    font-weight: 620;
+    letter-spacing: -.01em;
+    margin: 0;
+  }
+  .sub {
+    color: var(--muted);
+    font-size: 11.5px;
+    margin: 2px 0 0;
+  }
+  .stage {
+    margin-top: 30px;
+    font-size: 13px;
+    color: var(--fg);
+    min-height: 20px;
+  }
+  .detail {
+    margin-top: 8px;
+    font-size: 11.5px;
+    color: var(--muted);
+    -webkit-user-select: text;
+    user-select: text;
+    white-space: pre-wrap;
+    max-height: 92px;
+    overflow-y: auto;
+  }
+  .bar {
+    margin-top: 16px;
+    height: 4px;
+    border-radius: 2px;
+    background: #22262e;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity .2s;
+  }
+  .bar.on { opacity: 1; }
+  .fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #ff6b8a, #5b8cff);
+    transition: width .25s ease;
+  }
+  .spacer { flex: 1; }
+  .row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  button {
+    -webkit-app-region: no-drag;
+    font: inherit;
+    font-size: 12px;
+    padding: 7px 15px;
+    border-radius: 7px;
+    border: 1px solid #2c313b;
+    background: #1b1f26;
+    color: var(--fg);
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+  }
+  button:hover { background: #232833; border-color: #39404d; }
+  button.primary {
+    background: var(--accent);
+    border-color: transparent;
+    color: #1a0b10;
+    font-weight: 600;
+  }
+  button.primary:hover { background: #ff8099; }
+  .hidden { display: none !important; }
+  .foot {
+    color: #565d6b;
+    font-size: 10.5px;
+    margin-top: 14px;
+    letter-spacing: .01em;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <span class="dot" id="dot"></span>
+      <div>
+        <h1>Parley</h1>
+        <p class="sub">Running entirely on this Mac</p>
+      </div>
+    </div>
+
+    <div class="stage" id="stage">Starting…</div>
+    <div class="detail" id="detail"></div>
+
+    <div class="bar" id="bar"><div class="fill" id="fill"></div></div>
+
+    <div class="spacer"></div>
+
+    <div class="row hidden" id="actions">
+      <button class="primary" id="retry">Try again</button>
+      <button id="quit">Quit</button>
+    </div>
+
+    <div class="foot" id="foot">No cloud. No API keys. Audio never leaves the machine.</div>
+  </div>
+
+<script>
+  const dot    = document.getElementById('dot');
+  const stage  = document.getElementById('stage');
+  const detail = document.getElementById('detail');
+  const bar    = document.getElementById('bar');
+  const fill   = document.getElementById('fill');
+  const actions= document.getElementById('actions');
+  const foot   = document.getElementById('foot');
+  const retry  = document.getElementById('retry');
+  const quit   = document.getElementById('quit');
+
+  retry.addEventListener('click', () => {
+    actions.classList.add('hidden');
+    detail.textContent = '';
+    dot.className = 'dot';
+    boot.retry();
+  });
+  quit.addEventListener('click', () => boot.quit());
+
+  boot.onStatus(({ stage: s, message, detail: d, percent, retryable }) => {
+    if (message) stage.textContent = message;
+    detail.textContent = d || '';
+
+    if (typeof percent === 'number') {
+      bar.classList.add('on');
+      fill.style.width = percent + '%';
+    } else if (s !== 'download' && s !== 'models-intro') {
+      bar.classList.remove('on');
+      fill.style.width = '0%';
+    }
+
+    if (s === 'ready') {
+      dot.className = 'dot done';
+      foot.textContent = 'Ready.';
+    } else if (s === 'error') {
+      dot.className = 'dot err';
+      actions.classList.remove('hidden');
+      bar.classList.remove('on');
+      if (retryable === false) {
+        retry.classList.add('hidden');
+      } else {
+        retry.classList.remove('hidden');
+      }
+      foot.textContent = 'Something needs attention before the translator can run.';
+    } else if (s === 'models-intro' || s === 'download') {
+      foot.textContent = 'One-time download. Kept in Application Support.';
+    }
+  });
+</script>
+</body>
+</html>

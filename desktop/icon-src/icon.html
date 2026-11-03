@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { margin: 0; padding: 0; background: transparent; overflow: hidden; }
+  svg { display: block; }
+</style>
+</head>
+<body>
+<script>
+/**
+ * Ribbon mark — two threads passing each other.
+ *
+ * Geometry note: the two strands are vertical mirror images (A(t) + B(t) = 100
+ * everywhere), so they must cross twice, once in each half. That double crossing
+ * is the whole idea — one language becoming another, woven rather than replaced.
+ *
+ * Drawn in a 100-unit space and scaled into the macOS artwork box.
+ */
+const params = new URLSearchParams(location.search);
+const SIZE = Number(params.get('size') || 1024);
+const SMALL = SIZE <= 32;   // below this the shadow turnstile is just grime
+
+// macOS Big Sur+ grid: artwork is an 824 unit rounded square on a 1024 canvas.
+const ART = 824;
+const PAD = (1024 - ART) / 2;
+
+const STROKE = SMALL ? 11 : 9.5;
+const HALO = SMALL ? 0 : 15;
+
+// Two strands, mirror images about the horizontal centreline.
+const A = 'M12 68 C 28 68, 30 32, 50 32 C 70 32, 72 68, 88 68';
+const B = 'M12 32 C 28 32, 30 68, 50 68 C 70 68, 72 32, 88 32';
+
+const svg = `
+<svg xmlns="http://www.w3.org/2000/svg" width="${SIZE}" height="${SIZE}" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.45" y2="1">
+      <stop offset="0"    stop-color="#FF5F8F"/>
+      <stop offset="0.52" stop-color="#A855F7"/>
+      <stop offset="1"    stop-color="#4F7FFF"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <!-- The rounded square. 185 on 824 is the macOS squircle ratio. -->
+    <clipPath id="shape">
+      <rect x="${PAD}" y="${PAD}" width="${ART}" height="${ART}" rx="185"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#shape)">
+    <rect x="${PAD}" y="${PAD}" width="${ART}" height="${ART}" fill="url(#bg)"/>
+    <rect x="${PAD}" y="${PAD}" width="${ART}" height="${ART}" fill="url(#sheen)"/>
+
+    <g transform="translate(${PAD} ${PAD}) scale(${ART / 100})" fill="none"
+       stroke-linecap="round" stroke-linejoin="round">
+      <!-- far strand -->
+      <path d="${B}" stroke="#ffffff" stroke-opacity="0.42" stroke-width="${STROKE}"/>
+      ${HALO ? `
+      <!-- shadow: separates the near strand from the far one, so the weave
+           reads as depth rather than two lines crossing flat -->
+      <path d="${A}" stroke="#1a0a2e" stroke-opacity="0.28" stroke-width="${HALO}"/>
+      ` : ''}
+      <!-- near strand -->
+      <path d="${A}" stroke="#ffffff" stroke-opacity="0.97" stroke-width="${STROKE}"/>
+    </g>
+  </g>
+
+  <!-- hairline rim: gives the tile an edge against pale Dock backgrounds -->
+  <rect x="${PAD + 1}" y="${PAD + 1}" width="${ART - 2}" height="${ART - 2}"
+        rx="184" fill="none" stroke="#ffffff" stroke-opacity="0.16" stroke-width="2"/>
+</svg>`;
+
+document.body.innerHTML = svg;
+</script>
+</body>
+</html>
