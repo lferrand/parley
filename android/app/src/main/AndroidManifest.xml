@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <!-- Android 14+ silences microphone capture unless the foreground service
+         declares the microphone type. With only `specialUse` the platform logs
+         "App op 27 missing, silencing record" and hands the app digital silence:
+         recording succeeds, the buffer is zeroed, and every transcript is empty.
+         That is exactly the "I press, I speak, nothing happens" symptom. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Model files are ~1.4 GB and live in app-private storage. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:extractNativeLibs="true"
+        android:theme="@style/Theme.Parley">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.Parley">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--
+          The engine is a long-lived child process holding ~1.5 GB of model in
+          RAM. Without a foreground service Android reclaims that the moment the
+          activity is backgrounded, so a phone call mid-sentence kills the
+          translator. The notification is the honest trade for keeping it alive.
+        -->
+        <service
+            android:name=".EngineService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse|microphone">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Runs a local speech translation model; no network use." />
+        </service>
+    </application>
+</manifest>

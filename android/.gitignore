@@ -1,0 +1,19 @@
+# Build output
+build/
+.gradle/
+app/build/
+
+# Signing material — must never be committed
+keystore.properties
+*.jks
+*.keystore
+
+# Native engine binaries.
+# 220 MB of .so files rebuilt from a pinned llama.cpp tag (b12069). They are
+# build inputs, not source; README explains how to regenerate them.
+app/src/main/jniLibs/
+
+# Local machine paths
+local.properties
+
+.DS_Store

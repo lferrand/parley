@@ -334,6 +334,29 @@ What the shell handles that the browser version never had to:
 shipping it to anyone else needs a Developer ID identity and notarisation, or
 they will have to right-click → Open past Gatekeeper.
 
+## Android app
+
+A native Kotlin + Compose port lives in [`android/`](android/README.md): same
+pipeline, same guards file, models on the device. No cloud, no API key, no
+account.
+
+Verified on a Pixel 8 Pro (Android 16, 11.85 GB RAM) with two llama.cpp engines
+resident: `Good morning, how are you?` → `안녕하세요, 잘 지내세요?` in **5.5 s**,
+18-language picker, typed input, turn history and per-turn playback. TTS is
+implemented but not yet heard on hardware; ASR is still weak on mixed-language
+audio.
+
+```sh
+cd android
+gradle :app:assembleDebug      # first build downloads the NDK toolchain
+./install.sh                   # install on a connected device and stream logcat
+```
+
+Build inputs are not committed: the arm64 llama.cpp `.so` files
+(`android/app/src/main/jniLibs/`, 254 MB) are regenerated from the pinned
+tag, and the signing key (`release.jks`, `keystore.properties`) stays local.
+`android/README.md` has the exact commands.
+
 ## Files
 
 | Path | Role |
@@ -347,6 +370,9 @@ they will have to right-click → Open past Gatekeeper.
 | `desktop/vendor/llama-win/` | llama.cpp Vulkan build for Windows |
 | `desktop/vendor/ffmpeg-win/` | static `ffmpeg.exe` for Windows |
 | `desktop/vendor/nsis-native/` | arm64 `makensis` so the installer cross-builds without Rosetta |
+| `android/app/src/main/java/com/lionel/parley/` | Kotlin sources: engine service, ASR/MT/TTS calls, VAD, guards |
+| `android/app/src/main/assets/guards.rules.json` | Same validation rules as the desktop build |
+| `android/install.sh` | Install on a USB device and filter logcat to the app's PID |
 
 Server-side only, no build step, no dependencies beyond Node built-ins. The
 desktop shell is the one exception, and its `node_modules/` and `dist/` are
